@@ -1,5 +1,18 @@
 # SA818 Programming
 
+My friend (W6IPA) and I developed a versatile Raspberry-Pi hat that
+can be used for Allstar, Echolink, APRS, or any digital modes.
+
+We use the program in this GitHub repository to program the radio
+module SA818 used for the Pi-Hat.
+
+![Screen Shoot](docs/IMG_0716.JPG)
+
+We have some PCB left. We are selling them for [$25 on tindie][1]
+
+**Before programming the SA818 module, make sure you consult the band
+plan for your country and transmit on a frequency you are allowed to
+use.**
 
 ## Example
 
@@ -114,3 +127,6 @@ DCS codes must be followed by N or I for Normal or Inverse:
 532, 546, 565, 606, 612, 624, 627, 631, 632, 654, 662, 664, 703, 712,
 723, 731, 732, 734, 743, 754
 ```
+
+
+[1]: https://www.tindie.com/products/w6ipa/radio-interface-module-pirim-for-raspberry-pi/

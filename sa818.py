@@ -130,7 +130,7 @@ class SA818:
 
   def set_filter(self, opts):
     _yn = {True: "Yes", False: "No"}
-    # filters are pre-empasys, high-pass, low-pass
+    # filters are pre-emphasis, high-pass, low-pass
     cmd = "{}={},{},{}".format(self.FILTER, int(not opts.emphasis),
                                int(not opts.highpass), int(not opts.lowpass))
     self.send(cmd)
@@ -143,14 +143,14 @@ class SA818:
                   response, _yn[opts.emphasis], _yn[opts.highpass], _yn[opts.lowpass])
 
   def set_volume(self, opts):
-    cmd = "{}={:d}".format(self.VOLUME, opts.volume)
+    cmd = "{}={:d}".format(self.VOLUME, opts.level)
     self.send(cmd)
     time.sleep(1)
     response = self.readline()
     if response != "+DMOSETVOLUME:0":
       logger.error('SA818 set volume error')
     else:
-      logger.info("%s Volume level: %d", response, opts.volume)
+      logger.info("%s Volume level: %d", response, opts.level)
 
 
 def type_frequency(parg):
@@ -249,29 +249,42 @@ def main():
     epilog=format_codes(),
     formatter_class=argparse.RawDescriptionHelpFormatter,
   )
-  code_group = parser.add_mutually_exclusive_group()
-  parser.add_argument("--frequency", required=True, type=type_frequency,
-                      help="Transmit frequency")
-  parser.add_argument("--offset", default=0.0,
-                      help="0.0 for no offset [default: %(default)s]")
-  code_group.add_argument("--ctcss", default=None, type=type_ctcss,
-                          help="CTCSS (PL Tone) 0 for no CTCSS [default: %(default)s]")
-  code_group.add_argument("--dcs", default=None, type=type_dcs,
-                          help="DCS code must me the number followed by [N normal] or [I inverse]  [default: %(default)s]")
-  parser.add_argument("--squelsh", type=type_range, default=4,
-                      help="Squelsh value (1 to 9) [default: %(default)s]")
-  parser.add_argument("--volume", type=type_range, default=4,
-                      help="Volume value (1 to 8) [default: %(default)s]")
-  parser.add_argument("--emphasis", type=yesno, default='no',
-                      help="Enable [Pr/De]-emphasis (yes/no) [default: %(default)s]")
-  parser.add_argument("--highpass", type=yesno, default='no',
-                      help="Enable high pass filter (yes/no) [default: %(default)s]")
-  parser.add_argument("--lowpass", type=yesno, default='no',
-                      help="Enable low pass filters (yes/no) [default: %(default)s]")
-
   parser.add_argument("--port", type=str,
                       help="Serial port [default: linux console port]")
   parser.add_argument("--debug", action="store_true", default=False)
+  subparsers = parser.add_subparsers()
+
+  p_radio = subparsers.add_parser('radio', help='Program the radio (frequency/tome/squelsh)')
+  p_radio.set_defaults(func='radio')
+  p_radio.add_argument("--frequency", required=True, type=type_frequency,
+                       help="Transmit frequency")
+  p_radio.add_argument("--offset", default=0.0,
+                       help="0.0 for no offset [default: %(default)s]")
+  p_radio.add_argument("--squelsh", type=type_range, default=4,
+                       help="Squelsh value (1 to 9) [default: %(default)s]")
+  code_group = p_radio.add_mutually_exclusive_group()
+  code_group.add_argument("--ctcss", default=None, type=type_ctcss,
+                          help="CTCSS (PL Tone) 0 for no CTCSS [default: %(default)s]")
+  code_group.add_argument("--dcs", default=None, type=type_dcs,
+                          help=("DCS code must me the number followed by [N normal] or "
+                                "[I inverse]  [default: %(default)s]"))
+
+  p_volume = subparsers.add_parser('volume', help='Set the volume level')
+  p_volume.set_defaults(func='volume')
+  p_volume.add_argument("--level", type=type_range, default=4,
+                      help="Volume value (1 to 8) [default: %(default)s]")
+
+  p_filter = subparsers.add_parser('filters', help='Set filters')
+  p_filter.set_defaults(func='filters')
+  p_filter.add_argument("--emphasis", type=yesno, default='no',
+                        help="Enable [Pr/De]-emphasis (yes/no) [default: %(default)s]")
+  p_filter.add_argument("--highpass", type=yesno, default='no',
+                        help="Enable high pass filter (yes/no) [default: %(default)s]")
+  p_filter.add_argument("--lowpass", type=yesno, default='no',
+                        help="Enable low pass filters (yes/no) [default: %(default)s]")
+
+  p_version = subparsers.add_parser('version', help='Show the firmware version of the SA818')
+  p_version.set_defaults(func='version')
 
   opts = parser.parse_args()
   if opts.debug:
@@ -280,15 +293,19 @@ def main():
   logger.debug(opts)
 
   try:
-    radio = SA818()
+    radio = SA818(opts.port)
   except IOError as err:
     logger.error(err)
     sys.exit(os.EX_IOERR)
 
-  radio.version()
-  radio.set_frequency(opts)
-  radio.set_filter(opts)
-  radio.set_volume(opts)
+  if opts.func == 'version':
+    radio.version()
+  elif opts.func == 'radio':
+    radio.set_frequency(opts)
+  elif opts.func == 'filters':
+    radio.set_filter(opts)
+  elif opts.func == 'volume':
+    radio.set_volume(opts)
 
 if __name__ == "__main__":
   main()

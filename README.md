@@ -6,7 +6,7 @@ can be used for Allstar, Echolink, APRS, or any digital modes.
 We use the program in this GitHub repository to program the radio
 module SA818 used for the Pi-Hat.
 
-![Screen Shoot](docs/IMG_0716.JPG)
+![Screen Shoot](docs/IMG_0716.JPG =250x250)
 
 We have some PCB left. We are selling them for [$25 on tindie][1]
 

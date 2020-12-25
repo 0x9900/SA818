@@ -1,6 +1,16 @@
 # SA818 Programming
 
 
+## Example
+
+```
+[root@allstar ~]# python ./sa818-2.py --frequency 146.43 --ctcss 118.8 --volume=5
+SA818: INFO: Firmware version: V4.2
+SA818: INFO: +DMOSETGROUP:0 frequency: 146.4300, tone: 0017, squelsh: 4, OK
+SA818: INFO: +DMOSETFILTER:0 filters [Pre/De]emphasis: No, high-pass: No, low-pass: No
+SA818: INFO: +DMOSETVOLUME:0 Volume level: 5
+```
+
 ## Usage
 
 ```

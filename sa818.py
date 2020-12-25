@@ -44,6 +44,7 @@ class SA818:
   INIT = "AT+DMOCONNECT"
   SETGRP = "AT+DMOSETGROUP"
   FILTER = "AT+SETFILTER"
+  VOLUME = "AT+DMOSETVOLUME"
   NARROW = 0
   WIDE = 1
   PORTS = ('/dev/ttyAMA0', '/dev/ttyUSB0')
@@ -136,10 +137,21 @@ class SA818:
     time.sleep(1)
     response = self.readline()
     if response != "+DMOSETFILTER:0":
-      logger.error('SA818 programming error')
+      logger.error('SA818 set filter error')
     else:
       logger.info("%s filters [Pre/De]emphasis: %s, high-pass: %s, low-pass: %s",
                   response, _yn[opts.emphasis], _yn[opts.highpass], _yn[opts.lowpass])
+
+  def set_volume(self, opts):
+    cmd = "{}={:d}".format(self.VOLUME, opts.volume)
+    self.send(cmd)
+    time.sleep(1)
+    response = self.readline()
+    if response != "+DMOSETVOLUME:0":
+      logger.error('SA818 set volume error')
+    else:
+      logger.info("%s Volume level: %d", response, opts.volume)
+
 
 def type_frequency(parg):
   try:
@@ -262,9 +274,10 @@ def main():
     logger.error(err)
     sys.exit(os.EX_IOERR)
 
+  radio.version()
   radio.set_frequency(opts)
   radio.set_filter(opts)
-  radio.version()
+  radio.set_volume(opts)
 
 if __name__ == "__main__":
   main()

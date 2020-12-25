@@ -181,17 +181,21 @@ def type_ctcss(parg):
 
 def type_dcs(parg):
   err_msg = 'Invalid DCS use the --help argument for the list of DCS'
+  if parg[-1] not in ('N', 'I'):
+    raise argparse.ArgumentError('The DCS code must end with N or I')
+
+  code, direction = parg[:-1], parg[-1]
   try:
-    dcs = str(float(parg))
+    dcs = "{:03d}".format(int(code))
   except ValueError:
     raise argparse.ArgumentTypeError
 
-  if dcs not in DCS:
+  if dcs not in DCS_CODES:
     logger.error(err_msg)
     raise argparse.ArgumentError
 
-  dcs_code = DCS.index(dcs)
-  return "{:04d}".format(dcs_code)
+  dcs_code = dcs + direction
+  return "{:s}".format(dcs_code)
 
 def type_range(parg):
   try:
@@ -228,9 +232,15 @@ def format_codes():
   ctcss = textwrap.wrap(', '.join(CTCSS[1:]))
   dcs = textwrap.wrap(', '.join(DCS_CODES))
 
-  codes = "CTCSS codes (PL Tones):\n{}\n\nDCS Codes:\n{}".format(
-    '\n'.join(ctcss), '\n'.join(dcs))
-  return codes
+  codes = (
+    "CTCSS codes (PL Tones):\n{}".format('\n'.join(ctcss)),
+    "\n\n",
+    "DCS Codes:\n"
+    "DCS codes must be followed by N or I for Normal or Inverse:\n",
+    "> Example: 047I\n"
+    "{}".format('\n'.join(dcs))
+  )
+  return ''.join(codes)
 
 def main():
   set_loglevel()
@@ -247,7 +257,7 @@ def main():
   code_group.add_argument("--ctcss", default=None, type=type_ctcss,
                           help="CTCSS (PL Tone) 0 for no CTCSS [default: %(default)s]")
   code_group.add_argument("--dcs", default=None, type=type_dcs,
-                          help="DCS code CTCSS [default: %(default)s]")
+                          help="DCS code must me the number followed by [N normal] or [I inverse]  [default: %(default)s]")
   parser.add_argument("--squelsh", type=type_range, default=4,
                       help="Squelsh value (1 to 9) [default: %(default)s]")
   parser.add_argument("--volume", type=type_range, default=4,
@@ -264,9 +274,10 @@ def main():
   parser.add_argument("--debug", action="store_true", default=False)
 
   opts = parser.parse_args()
-
   if opts.debug:
     logger.setLevel(logging.DEBUG)
+
+  logger.debug(opts)
 
   try:
     radio = SA818()

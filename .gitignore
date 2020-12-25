@@ -1,0 +1,6 @@
+.DS_Store
+*~
+*.pyc
+/pexec.egg-info/
+/build/
+/dist/

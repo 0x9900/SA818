@@ -21,7 +21,7 @@ use.**
 SA818: INFO: Firmware version: V4.2
 
 [root@allstar ~]# python ./sa818-2.py radio --frequency 146.43 --ctcss 118.8
-SA818: INFO: +DMOSETGROUP:0 frequency: 146.4300, tone: 0017, squelsh: 4, OK
+SA818: INFO: +DMOSETGROUP:0 frequency: 146.4300, tone: 0017, squelch: 4, OK
 
 [root@allstar ~]# python ./sa818-2.py volume --level 5
 SA818: INFO: +DMOSETVOLUME:0 Volume level: 5
@@ -39,7 +39,7 @@ SA818: INFO: +DMOSETVOLUME:0 Volume level: 5
 
 This program has for sections:
 
- - radio: Program the radio's frequency, tone and squelsh level
+ - radio: Program the radio's frequency, tone and squelch level
  - volume: Set the volume level
  - filters: Turn on or off the [pre/de]-emphasis and as well as the high and low pass filter
  - version: display the firmware version of the SA818 module
@@ -52,7 +52,7 @@ generate configuration for switch port
 
 positional arguments:
   {radio,volume,filters,version}
-    radio               Program the radio (frequency/tome/squelsh)
+    radio               Program the radio (frequency/tome/squelch)
     volume              Set the volume level
     filters             Set filters
     version             Show the firmware version of the SA818
@@ -67,14 +67,14 @@ optional arguments:
 
 ```
 usage: sa818.py radio [-h] --frequency FREQUENCY [--offset OFFSET]
-                      [--squelsh SQUELSH] [--ctcss CTCSS | --dcs DCS]
+                      [--squelch SQUELCH] [--ctcss CTCSS | --dcs DCS]
 
 optional arguments:
   -h, --help            show this help message and exit
   --frequency FREQUENCY
                         Transmit frequency
   --offset OFFSET       0.0 for no offset [default: 0.0]
-  --squelsh SQUELSH     Squelsh value (1 to 9) [default: 4]
+  --squelch SQUELCH     Squelch value (1 to 9) [default: 4]
   --ctcss CTCSS         CTCSS (PL Tone) 0 for no CTCSS [default: None]
   --dcs DCS             DCS code must me the number followed by [N normal] or
                         [I inverse] [default: None]

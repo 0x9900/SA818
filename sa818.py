@@ -66,6 +66,7 @@ class SA818:
         break
       except serial.SerialException as err:
         logger.debug(err)
+        raise IOError(err)
 
     if not isinstance(self.serial, serial.Serial):
       raise IOError('Error openning the serial port')
@@ -150,7 +151,7 @@ class SA818:
     if response != "+DMOSETVOLUME:0":
       logger.error('SA818 set volume error')
     else:
-      logger.info("%s Volume level: %d", response, opts.level)
+      logger.info("%s Volume level: %d, OK", response, opts.level)
 
 
 def type_frequency(parg):
@@ -294,7 +295,7 @@ def main():
 
   try:
     radio = SA818(opts.port)
-  except IOError as err:
+  except (IOError, SystemError) as err:
     logger.error(err)
     sys.exit(os.EX_IOERR)
 

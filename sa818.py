@@ -118,7 +118,7 @@ class SA818:
       tone = '0000'
 
     cmd = "{}={},{},{},{},{},{}".format(self.SETGRP, self.WIDE, opts.frequency,
-                                        opts.frequency, tone, opts.squelsh,
+                                        opts.frequency, tone, opts.squelch,
                                         tone)
     self.send(cmd)
     time.sleep(1)
@@ -126,8 +126,8 @@ class SA818:
     if response != '+DMOSETGROUP:0':
       logger.error('SA818 programming error')
     else:
-      logger.info("%s frequency: %s, tone: %s, squelsh: %s, OK",
-                  response, opts.frequency, tone, opts.squelsh)
+      logger.info("%s frequency: %s, tone: %s, squelch: %s, OK",
+                  response, opts.frequency, tone, opts.squelch)
 
   def set_filter(self, opts):
     _yn = {True: "Yes", False: "No"}
@@ -255,14 +255,14 @@ def main():
   parser.add_argument("--debug", action="store_true", default=False)
   subparsers = parser.add_subparsers()
 
-  p_radio = subparsers.add_parser('radio', help='Program the radio (frequency/tome/squelsh)')
+  p_radio = subparsers.add_parser('radio', help='Program the radio (frequency/tome/squelch)')
   p_radio.set_defaults(func='radio')
   p_radio.add_argument("--frequency", required=True, type=type_frequency,
                        help="Transmit frequency")
   p_radio.add_argument("--offset", default=0.0,
                        help="0.0 for no offset [default: %(default)s]")
-  p_radio.add_argument("--squelsh", type=type_range, default=4,
-                       help="Squelsh value (1 to 9) [default: %(default)s]")
+  p_radio.add_argument("--squelch", type=type_range, default=4,
+                       help="Squelch value (1 to 9) [default: %(default)s]")
   code_group = p_radio.add_mutually_exclusive_group()
   code_group.add_argument("--ctcss", default=None, type=type_ctcss,
                           help="CTCSS (PL Tone) 0 for no CTCSS [default: %(default)s]")

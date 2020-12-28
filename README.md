@@ -14,6 +14,25 @@ We have some PCB left. We are selling them for [$25 on tindie][1]
 plan for your country and transmit on a frequency you are allowed to
 use.**
 
+## Intallation
+
+The easiest way to install is program is to use the command `pip`. Pip
+will automatically take care of installing the dependencies.
+
+```
+$ sudo pip install sa818
+```
+
+You can also clone this repository and use the setup.py script with
+the following command. You will have to install the python package
+`pyserial` manually. To install dependencies, refer to the manual of
+your operating system.
+
+```
+$ git clone https://github.com/0x9900/SA818.git
+$ sudo python3 setup.py install
+```
+
 ## Example
 
 ```

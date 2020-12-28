@@ -127,7 +127,7 @@ class SA818:
       logger.error('SA818 programming error')
     else:
       logger.info("%s frequency: %s, tone: %s, squelch: %s, OK",
-                  response, opts.frequency, tone, opts.squelch)
+                  response, opts.frequency, CTCSS[int(tone)], opts.squelch)
 
   def set_filter(self, opts):
     _yn = {True: "Yes", False: "No"}

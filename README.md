@@ -9,6 +9,7 @@ module SA818 used for the Pi-Hat.
 <img src="docs/IMG_0716.JPG" width="250" height="250" />
 
 We have some PCB left. We are selling them for [$25 on tindie][1]
+You can also visit the this blog post [about this program][2]
 
 **Before programming the SA818 module, make sure you consult the band
 plan for your country and transmit on a frequency you are allowed to
@@ -149,3 +150,4 @@ DCS codes must be followed by N or I for Normal or Inverse:
 
 
 [1]: https://www.tindie.com/products/w6ipa/radio-interface-module-pirim-for-raspberry-pi/
+[2]: https://0x9900.com/programming-the-radio-module-sa818/

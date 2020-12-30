@@ -66,7 +66,7 @@ class SA818:
         break
       except serial.SerialException as err:
         logger.debug(err)
-        raise IOError(err)
+        raise IOError(err) from err
 
     if not isinstance(self.serial, serial.Serial):
       raise IOError('Error openning the serial port')
@@ -75,8 +75,6 @@ class SA818:
     reply = self.readline()
     if reply != "+DMOCONNECT:0":
       raise SystemError('Connection error')
-
-    return
 
   def close(self):
     self.serial.close()
@@ -87,15 +85,15 @@ class SA818:
     data = bytes(data + self.EOL, 'ascii')
     try:
       self.serial.write(data)
-    except Exception as err:
+    except serial.SerialException as err:
       logger.error(err)
 
   def readline(self):
     try:
       line = self.serial.readline()
-    except Exception as err:
+    except serial.SerialException as err:
       logger.warning(err)
-      return
+      return None
     line = line.decode('ascii')
     logger.debug(line)
     return line.rstrip()
@@ -157,10 +155,10 @@ class SA818:
 def type_frequency(parg):
   try:
     frequency = float(parg)
-  except ValueError:
-    raise argparse.ArgumentTypeError
+  except ValueError as err:
+    raise argparse.ArgumentTypeError from err
 
-  if not (144 < frequency < 148) and not (420 < frequency < 450):
+  if not 144 < frequency < 148 and not 420 < frequency < 450:
     logger.error('Frequency outside the amateur bands')
     raise argparse.ArgumentError
 
@@ -170,8 +168,8 @@ def type_ctcss(parg):
   err_msg = 'Invalid CTCSS use the --help argument for the list of CTCSS'
   try:
     ctcss = str(float(parg))
-  except ValueError:
-    raise argparse.ArgumentTypeError
+  except ValueError as err:
+    raise argparse.ArgumentTypeError from err
 
   if ctcss not in CTCSS:
     logger.error(err_msg)
@@ -183,13 +181,13 @@ def type_ctcss(parg):
 def type_dcs(parg):
   err_msg = 'Invalid DCS use the --help argument for the list of DCS'
   if parg[-1] not in ('N', 'I'):
-    raise argparse.ArgumentError('The DCS code must end with N or I')
+    raise argparse.ArgumentError
 
   code, direction = parg[:-1], parg[-1]
   try:
     dcs = "{:03d}".format(int(code))
-  except ValueError:
-    raise argparse.ArgumentTypeError
+  except ValueError as err:
+    raise argparse.ArgumentTypeError from err
 
   if dcs not in DCS_CODES:
     logger.error(err_msg)
@@ -201,8 +199,8 @@ def type_dcs(parg):
 def type_range(parg):
   try:
     value = int(parg)
-  except:
-    raise argparse.ArgumentTypeError
+  except ValueError as err:
+    raise argparse.ArgumentTypeError from err
 
   if value not in range(1, 10):
     logger.error('The value must must be between 1 and 9')
@@ -218,7 +216,6 @@ def yesno(parg):
   if parg.lower() in no_strings:
     return False
   raise argparse.ArgumentError
-  return True
 
 def set_loglevel():
   loglevel = os.getenv('LOGLEVEL', 'INFO')
@@ -227,7 +224,6 @@ def set_loglevel():
     logger.root.setLevel(loglevel)
   except ValueError:
     logger.warning('Loglevel error: %s', loglevel)
-
 
 def format_codes():
   ctcss = textwrap.wrap(', '.join(CTCSS[1:]))

@@ -115,17 +115,26 @@ class SA818:
     if not tone:                # 0000 = No ctcss or dcs tone
       tone = '0000'
 
-    cmd = "{}={},{},{},{},{},{}".format(self.SETGRP, self.WIDE, opts.frequency,
-                                        opts.frequency, tone, opts.squelch,
-                                        tone)
+    if opts.offset == 0.0:
+      tx_freq = rx_freq = "{:.4f}".format(opts.frequency)
+    else:
+      rx_freq = "{:.4f}".format(opts.frequency)
+      tx_freq = "{:.4f}".format(opts.frequency + opts.offset)
+
+    cmd = "{}={},{},{},{},{},{}".format(self.SETGRP, self.WIDE, tx_freq, rx_freq,
+                                        tone, opts.squelch, tone)
     self.send(cmd)
     time.sleep(1)
     response = self.readline()
     if response != '+DMOSETGROUP:0':
       logger.error('SA818 programming error')
     else:
-      logger.info("%s frequency: %s, tone: %s, squelch: %s, OK",
-                  response, opts.frequency, CTCSS[int(tone)], opts.squelch)
+      if opts.ctcss:
+        msg = "%s, RX frequency: %s, TX frequency: %s, ctcss: %s, squelch: %s, OK"
+        tone = CTCSS[int(tone)]
+      elif opts.dcs:
+        msg = "%s, RX frequency: %s, TX frequency: %s, dcs: %s, squelch: %s, OK"
+      logger.info(msg, response, rx_freq, tx_freq, tone, opts.squelch)
 
   def set_filter(self, opts):
     _yn = {True: "Yes", False: "No"}
@@ -155,21 +164,20 @@ class SA818:
 def type_frequency(parg):
   try:
     frequency = float(parg)
-  except ValueError as err:
-    raise argparse.ArgumentTypeError from err
+  except ValueError:
+    raise argparse.ArgumentTypeError from None
 
   if not 144 < frequency < 148 and not 420 < frequency < 450:
     logger.error('Frequency outside the amateur bands')
     raise argparse.ArgumentError
-
-  return "{:.4f}".format(frequency)
+  return frequency
 
 def type_ctcss(parg):
   err_msg = 'Invalid CTCSS use the --help argument for the list of CTCSS'
   try:
     ctcss = str(float(parg))
-  except ValueError as err:
-    raise argparse.ArgumentTypeError from err
+  except ValueError:
+    raise argparse.ArgumentTypeError from None
 
   if ctcss not in CTCSS:
     logger.error(err_msg)
@@ -186,8 +194,8 @@ def type_dcs(parg):
   code, direction = parg[:-1], parg[-1]
   try:
     dcs = "{:03d}".format(int(code))
-  except ValueError as err:
-    raise argparse.ArgumentTypeError from err
+  except ValueError:
+    raise argparse.ArgumentTypeError from None
 
   if dcs not in DCS_CODES:
     logger.error(err_msg)
@@ -199,13 +207,12 @@ def type_dcs(parg):
 def type_range(parg):
   try:
     value = int(parg)
-  except ValueError as err:
-    raise argparse.ArgumentTypeError from err
+  except ValueError:
+    raise argparse.ArgumentTypeError from None
 
   if value not in range(1, 10):
     logger.error('The value must must be between 1 and 9')
     raise argparse.ArgumentError
-
   return value
 
 def yesno(parg):
@@ -255,8 +262,8 @@ def main():
   p_radio.set_defaults(func='radio')
   p_radio.add_argument("--frequency", required=True, type=type_frequency,
                        help="Transmit frequency")
-  p_radio.add_argument("--offset", default=0.0,
-                       help="0.0 for no offset [default: %(default)s]")
+  p_radio.add_argument("--offset", default=0.0, type=float,
+                       help="Offset in MHz, 0 for no offset [default: %(default)s]")
   p_radio.add_argument("--squelch", type=type_range, default=4,
                        help="Squelch value (1 to 9) [default: %(default)s]")
   code_group = p_radio.add_mutually_exclusive_group()

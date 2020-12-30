@@ -37,13 +37,13 @@ $ sudo python3 setup.py install
 ## Example
 
 ```
-[root@allstar ~]# python ./sa818-2.py version
+[root@allstar ~]# sa818 version
 SA818: INFO: Firmware version: V4.2
 
-[root@allstar ~]# python ./sa818-2.py radio --frequency 146.43 --ctcss 118.8
-SA818: INFO: +DMOSETGROUP:0 frequency: 146.4300, tone: 0017, squelch: 4, OK
+[root@allstar ~]# sa818 radio --frequency 145.230 --offset -.6 --ctcss 100
+SA818: INFO: +DMOSETGROUP:0, RX frequency: 145.2300, TX frequency: 144.6300, ctcss: 100.0, squelch: 4, OK
 
-[root@allstar ~]# python ./sa818-2.py volume --level 5
+[root@allstar ~]# sa818 volume --level 5
 SA818: INFO: +DMOSETVOLUME:0 Volume level: 5
 ```
 
@@ -51,7 +51,7 @@ If you use an FTDI dongle to program the SA828 module the USB port can
 be specified with the `--port` argument
 
 ```
-[root@allstar ~]# python ./sa818-2.py --port /dev/ttyAMA0 volume --level 5
+[root@allstar ~]# sa818 --port /dev/ttyAMA0 volume --level 5
 SA818: INFO: +DMOSETVOLUME:0 Volume level: 5
 ```
 
@@ -65,7 +65,7 @@ This program has for sections:
  - version: display the firmware version of the SA818 module
 
 ```
-usage: sa818.py [-h] [--port PORT] [--debug]
+usage: sa818 [-h] [--port PORT] [--debug]
                 {radio,volume,filters,version} ...
 
 generate configuration for switch port
@@ -86,7 +86,7 @@ optional arguments:
 ### Radio
 
 ```
-usage: sa818.py radio [-h] --frequency FREQUENCY [--offset OFFSET]
+usage: sa818 radio [-h] --frequency FREQUENCY [--offset OFFSET]
                       [--squelch SQUELCH] [--ctcss CTCSS | --dcs DCS]
 
 optional arguments:
@@ -103,7 +103,7 @@ optional arguments:
 ### Volume
 
 ```
-usage: sa818.py volume [-h] [--level LEVEL]
+usage: sa818 volume [-h] [--level LEVEL]
 
 optional arguments:
   -h, --help     show this help message and exit
@@ -113,7 +113,7 @@ optional arguments:
 ### Filters
 
 ```
-usage: sa818.py filters [-h] [--emphasis EMPHASIS] [--highpass HIGHPASS]
+usage: sa818 filters [-h] [--emphasis EMPHASIS] [--highpass HIGHPASS]
                         [--lowpass LOWPASS]
 
 optional arguments:

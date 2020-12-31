@@ -5,11 +5,32 @@ import sys
 from setuptools import setup, find_packages
 
 __doc__ = """
+
+## SA818 Programming
+
 Use this software to program the frequency, ctcss, dcs and filters ont
 the radio module SA818
+
+### Installation
+
+```
+$ pip install sa818
+```
+
+### Example
+
+```
+$ sa818 radio --frequency 145.230 --offset -.6 --ctcss 100
+SA818: INFO: +DMOSETGROUP:0, RX frequency: 145.2300, TX frequency: 144.6300, ctcss: 100.0, squelch: 4, OK
+
+$ sa818 volume --level 5
+SA818: INFO: +DMOSETVOLUME:0 Volume level: 5
+```
+
 """
+
 __author__ = "Fred C. (W6BSD)"
-__version__ = '0.1.2'
+__version__ = '0.1.5'
 __license__ = 'BSD'
 
 py_version = sys.version_info[:2]
@@ -21,6 +42,7 @@ setup(
   version=__version__,
   description='SA818 Programming Software',
   long_description=__doc__,
+  long_description_content_type='text/markdown',
   url='https://github.com/0x9900/SA818/',
   license=__license__,
   author=__author__,

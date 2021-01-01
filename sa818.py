@@ -45,6 +45,7 @@ class SA818:
   SETGRP = "AT+DMOSETGROUP"
   FILTER = "AT+SETFILTER"
   VOLUME = "AT+DMOSETVOLUME"
+  TAIL = "AT+SETTAIL"
   NARROW = 0
   WIDE = 1
   PORTS = ('/dev/ttyAMA0', '/dev/ttyUSB0')
@@ -110,7 +111,7 @@ class SA818:
       logger.info('Firmware version: %s', version)
     return version
 
-  def set_frequency(self, opts):
+  def set_radio(self, opts):
     tone = opts.ctcss if opts.ctcss else opts.dcs
     if not tone:                # 0000 = No ctcss or dcs tone
       tone = '0000'
@@ -132,9 +133,18 @@ class SA818:
       if opts.ctcss:
         msg = "%s, RX frequency: %s, TX frequency: %s, ctcss: %s, squelch: %s, OK"
         tone = CTCSS[int(tone)]
+        logger.info(msg, response, rx_freq, tx_freq, tone, opts.squelch)
       elif opts.dcs:
         msg = "%s, RX frequency: %s, TX frequency: %s, dcs: %s, squelch: %s, OK"
-      logger.info(msg, response, rx_freq, tx_freq, tone, opts.squelch)
+        logger.info(msg, response, rx_freq, tx_freq, tone, opts.squelch)
+      else:
+        msg = "%s, RX frequency: %s, TX frequency: %s, squelch: %s, OK"
+        logger.info(msg, response, rx_freq, tx_freq, opts.squelch)
+
+    if opts.close_tail is not None and opts.ctcss is not None:
+      self.close_tail(opts)
+    elif opts.close_tail is not None:
+      logger.warning('Ignoring "--close-tail" specified without ctcss')
 
   def set_filter(self, opts):
     _yn = {True: "Yes", False: "No"}
@@ -159,6 +169,17 @@ class SA818:
       logger.error('SA818 set volume error')
     else:
       logger.info("%s Volume level: %d, OK", response, opts.level)
+
+  def close_tail(self, opts):
+    _yn = {True: "Yes", False: "No"}
+    cmd = "{}={}".format(self.TAIL, int(opts.close_tail))
+    self.send(cmd)
+    time.sleep(1)
+    response = self.readline()
+    if response != "+DMOSETTAIL:0":
+      logger.error('SA818 set filter error')
+    else:
+      logger.info("%s close tail: %s", response, _yn[opts.close_tail])
 
 
 def type_frequency(parg):
@@ -224,6 +245,10 @@ def yesno(parg):
     return False
   raise argparse.ArgumentError
 
+def noneyesno(parg):
+  if parg is not None:
+    return yesno(parg)
+
 def set_loglevel():
   loglevel = os.getenv('LOGLEVEL', 'INFO')
   loglevel = loglevel.upper()
@@ -258,10 +283,10 @@ def main():
   parser.add_argument("--debug", action="store_true", default=False)
   subparsers = parser.add_subparsers()
 
-  p_radio = subparsers.add_parser('radio', help='Program the radio (frequency/tome/squelch)')
-  p_radio.set_defaults(func='radio')
+  p_radio = subparsers.add_parser("radio", help='Program the radio (frequency/tome/squelch)')
+  p_radio.set_defaults(func="radio")
   p_radio.add_argument("--frequency", required=True, type=type_frequency,
-                       help="Transmit frequency")
+                       help="Receive frequency")
   p_radio.add_argument("--offset", default=0.0, type=float,
                        help="Offset in MHz, 0 for no offset [default: %(default)s]")
   p_radio.add_argument("--squelch", type=type_range, default=4,
@@ -272,14 +297,16 @@ def main():
   code_group.add_argument("--dcs", default=None, type=type_dcs,
                           help=("DCS code must me the number followed by [N normal] or "
                                 "[I inverse]  [default: %(default)s]"))
+  p_radio.add_argument("--close-tail", default=None, type=noneyesno,
+                       help="Close CTCSS Tail Tone (yes/no)")
 
-  p_volume = subparsers.add_parser('volume', help='Set the volume level')
-  p_volume.set_defaults(func='volume')
+  p_volume = subparsers.add_parser("volume", help="Set the volume level")
+  p_volume.set_defaults(func="volume")
   p_volume.add_argument("--level", type=type_range, default=4,
                       help="Volume value (1 to 8) [default: %(default)s]")
 
-  p_filter = subparsers.add_parser('filters', help='Set filters')
-  p_filter.set_defaults(func='filters')
+  p_filter = subparsers.add_parser("filters", help="Set/Unset filters")
+  p_filter.set_defaults(func="filters")
   p_filter.add_argument("--emphasis", type=yesno, required=True,
                         help="Enable [Pr/De]-emphasis (yes/no)")
   p_filter.add_argument("--highpass", type=yesno, required=True,
@@ -287,8 +314,8 @@ def main():
   p_filter.add_argument("--lowpass", type=yesno, required=True,
                         help="Enable low pass filters (yes/no)")
 
-  p_version = subparsers.add_parser('version', help='Show the firmware version of the SA818')
-  p_version.set_defaults(func='version')
+  p_version = subparsers.add_parser("version", help="Show the firmware version of the SA818")
+  p_version.set_defaults(func="version")
 
   opts = parser.parse_args()
   if opts.debug:
@@ -305,7 +332,7 @@ def main():
   if opts.func == 'version':
     radio.version()
   elif opts.func == 'radio':
-    radio.set_frequency(opts)
+    radio.set_radio(opts)
   elif opts.func == 'filters':
     radio.set_filter(opts)
   elif opts.func == 'volume':

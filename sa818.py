@@ -48,7 +48,7 @@ class SA818:
   TAIL = "AT+SETTAIL"
   NARROW = 0
   WIDE = 1
-  PORTS = ('/dev/ttyAMA0', '/dev/ttyUSB0')
+  PORTS = ('/dev/serial0', '/dev/ttyUSB0')
   READ_TIMEOUT = 1.0
 
   def __init__(self, port=None):

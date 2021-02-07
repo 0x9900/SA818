@@ -67,7 +67,6 @@ class SA818:
         break
       except serial.SerialException as err:
         logger.debug(err)
-        raise IOError(err) from err
 
     if not isinstance(self.serial, serial.Serial):
       raise IOError('Error openning the serial port')

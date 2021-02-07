@@ -329,6 +329,12 @@ def main():
   p_version.set_defaults(func="version")
 
   opts = parser.parse_args()
+  if not hasattr(opts, 'func'):
+    print('sa818: error: the following arguments are required: {radio,volume,filters,version}\n'
+          'use --help for more informatiion',
+          file=sys.stderr)
+    exit(os.EX_USAGE)
+
   if opts.debug:
     logger.setLevel(logging.DEBUG)
 

@@ -224,14 +224,26 @@ def type_dcs(parg):
   dcs_code = dcs + direction
   return "{:s}".format(dcs_code)
 
-def type_range(parg):
+def type_squelch(parg):
   try:
     value = int(parg)
   except ValueError:
     raise argparse.ArgumentTypeError from None
 
-  if value not in range(1, 10):
-    logger.error('The value must must be between 1 and 9')
+  if value not in range(0, 9):
+    logger.error('The value must must be between 0 and 8 (inclusive)')
+    raise argparse.ArgumentError
+  return value
+
+def type_level(parg):
+  print(parg)
+  try:
+    value = int(parg)
+  except ValueError:
+    raise argparse.ArgumentTypeError from None
+
+  if value not in range(1, 9):
+    logger.error('The value must must be between 1 and 8 (inclusive)')
     raise argparse.ArgumentError
   return value
 
@@ -288,8 +300,8 @@ def main():
                        help="Receive frequency")
   p_radio.add_argument("--offset", default=0.0, type=float,
                        help="Offset in MHz, 0 for no offset [default: %(default)s]")
-  p_radio.add_argument("--squelch", type=type_range, default=4,
-                       help="Squelch value (1 to 9) [default: %(default)s]")
+  p_radio.add_argument("--squelch", type=type_squelch, default=4,
+                       help="Squelch value (0 to 8) [default: %(default)s]")
   code_group = p_radio.add_mutually_exclusive_group()
   code_group.add_argument("--ctcss", default=None, type=type_ctcss,
                           help="CTCSS (PL Tone) 0 for no CTCSS [default: %(default)s]")
@@ -301,7 +313,7 @@ def main():
 
   p_volume = subparsers.add_parser("volume", help="Set the volume level")
   p_volume.set_defaults(func="volume")
-  p_volume.add_argument("--level", type=type_range, default=4,
+  p_volume.add_argument("--level", type=type_level, default=4,
                       help="Volume value (1 to 8) [default: %(default)s]")
 
   p_filter = subparsers.add_parser("filters", help="Set/Unset filters")

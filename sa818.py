@@ -236,7 +236,6 @@ def type_squelch(parg):
   return value
 
 def type_level(parg):
-  print(parg)
   try:
     value = int(parg)
   except ValueError:

@@ -118,9 +118,9 @@ usage: sa818 filters [-h] [--emphasis EMPHASIS] [--highpass HIGHPASS]
 
 optional arguments:
   -h, --help           show this help message and exit
-  --emphasis EMPHASIS  Enable [Pr/De]-emphasis (yes/no) [default: no]
-  --highpass HIGHPASS  Enable high pass filter (yes/no) [default: no]
-  --lowpass LOWPASS    Enable low pass filters (yes/no) [default: no]
+  --emphasis EMPHASIS  Disable [Pr/De]-emphasis (yes/no) [default: no]
+  --highpass HIGHPASS  Disable high pass filter (yes/no) [default: no]
+  --lowpass LOWPASS    Disable low pass filters (yes/no) [default: no]
 ```
 
 ## CTCSS codes (PL Tones)

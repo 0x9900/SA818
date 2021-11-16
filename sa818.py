@@ -318,11 +318,11 @@ def main():
   p_filter = subparsers.add_parser("filters", help="Set/Unset filters")
   p_filter.set_defaults(func="filters")
   p_filter.add_argument("--emphasis", type=yesno, required=True,
-                        help="Enable [Pr/De]-emphasis (yes/no)")
+                        help="Disable [Pr/De]-emphasis (yes/no)")
   p_filter.add_argument("--highpass", type=yesno, required=True,
-                        help="Enable high pass filter (yes/no)")
+                        help="Disable high pass filter (yes/no)")
   p_filter.add_argument("--lowpass", type=yesno, required=True,
-                        help="Enable low pass filters (yes/no)")
+                        help="Disable low pass filters (yes/no)")
 
   p_version = subparsers.add_parser("version", help="Show the firmware version of the SA818")
   p_version.set_defaults(func="version")

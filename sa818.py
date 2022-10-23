@@ -134,7 +134,7 @@ class SA818:
     if response != '+DMOSETGROUP:0':
       logger.error('SA818 programming error')
     else:
-      bw = ['Naorrow', 'Wide'][opts.bw]
+      bw = ['Narrow', 'Wide'][opts.bw]
       if opts.ctcss:
         msg = "%s, BW: %s, RX frequency: %s, TX frequency: %s, ctcss: %s, squelch: %s, OK"
         tone = CTCSS[int(tone)]

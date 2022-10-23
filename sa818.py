@@ -134,16 +134,17 @@ class SA818:
     if response != '+DMOSETGROUP:0':
       logger.error('SA818 programming error')
     else:
+      bw = ['Naorrow', 'Wide'][opts.bw]
       if opts.ctcss:
-        msg = "%s, RX frequency: %s, TX frequency: %s, ctcss: %s, squelch: %s, OK"
+        msg = "%s, BW: %s, RX frequency: %s, TX frequency: %s, ctcss: %s, squelch: %s, OK"
         tone = CTCSS[int(tone)]
-        logger.info(msg, response, rx_freq, tx_freq, tone, opts.squelch)
+        logger.info(msg, response, bw, rx_freq, tx_freq, tone, opts.squelch)
       elif opts.dcs:
-        msg = "%s, RX frequency: %s, TX frequency: %s, dcs: %s, squelch: %s, OK"
-        logger.info(msg, response, rx_freq, tx_freq, tone, opts.squelch)
+        msg = "%s, BW: %s RX frequency: %s, TX frequency: %s, dcs: %s, squelch: %s, OK"
+        logger.info(msg, response, bw, rx_freq, tx_freq, tone, opts.squelch)
       else:
-        msg = "%s, RX frequency: %s, TX frequency: %s, squelch: %s, OK"
-        logger.info(msg, response, rx_freq, tx_freq, opts.squelch)
+        msg = "%s, BW: %s, RX frequency: %s, TX frequency: %s, squelch: %s, OK"
+        logger.info(msg, response, bw, rx_freq, tx_freq, opts.squelch)
 
     if opts.close_tail is not None and opts.ctcss is not None:
       self.close_tail(opts)

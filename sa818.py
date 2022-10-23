@@ -37,6 +37,8 @@ DCS_CODES = [
   "631", "632", "654", "662", "664", "703", "712", "723", "731", "732", "734", "743", "754"
 ]
 
+BAUD_RATES = [300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]
+
 DEFAULT_BAUDRATE = 9600
 
 class SA818:
@@ -49,9 +51,9 @@ class SA818:
   NARROW = 0
   WIDE = 1
   PORTS = ('/dev/serial0', '/dev/ttyUSB0')
-  READ_TIMEOUT = 1.0
+  READ_TIMEOUT = 3.0
 
-  def __init__(self, port=None):
+  def __init__(self, port=None, baud=DEFAULT_BAUDRATE):
     self.serial = None
     if port:
       ports = [port]
@@ -60,10 +62,11 @@ class SA818:
 
     for _port in ports:
       try:
-        self.serial = serial.Serial(port=_port, baudrate=DEFAULT_BAUDRATE,
+        self.serial = serial.Serial(port=_port, baudrate=baud,
                                     parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE,
                                     bytesize=serial.EIGHTBITS,
                                     timeout=self.READ_TIMEOUT)
+        logger.debug(self.serial)
         break
       except serial.SerialException as err:
         logger.debug(err)
@@ -94,8 +97,11 @@ class SA818:
     except serial.SerialException as err:
       logger.warning(err)
       return None
-    line = line.decode('ascii')
-    logger.debug(line)
+    try:
+      line = line.decode('ascii')
+    except UnicodeDecodeError:
+      logger.debug(line)
+      logger.error('Character decode error: Check your baudrate')
     return line.rstrip()
 
   def version(self):
@@ -288,9 +294,11 @@ def main():
     epilog=format_codes(),
     formatter_class=argparse.RawDescriptionHelpFormatter,
   )
+  parser.add_argument("--debug", action="store_true", default=False)
   parser.add_argument("--port", type=str,
                       help="Serial port [default: linux console port]")
-  parser.add_argument("--debug", action="store_true", default=False)
+  parser.add_argument('--speed', type=int, choices=BAUD_RATES, default=DEFAULT_BAUDRATE,
+                      help="Connection speed")
   subparsers = parser.add_subparsers()
 
   p_radio = subparsers.add_parser("radio", help='Program the radio (frequency/tome/squelch)')
@@ -340,7 +348,7 @@ def main():
   logger.debug(opts)
 
   try:
-    radio = SA818(opts.port)
+    radio = SA818(opts.port, opts.speed)
   except (IOError, SystemError) as err:
     logger.error(err)
     sys.exit(os.EX_IOERR)

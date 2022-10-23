@@ -30,12 +30,12 @@ SA818: INFO: +DMOSETVOLUME:0 Volume level: 5
 """
 
 __author__ = "Fred C. (W6BSD)"
-__version__ = '0.1.9'
+__version__ = '0.2.0'
 __license__ = 'BSD'
 
 py_version = sys.version_info[:2]
-if py_version < (3, 5):
-  raise RuntimeError('SA818 requires Python 3.5 or later')
+if py_version < (3, 8):
+  raise RuntimeError('SA818 requires Python 3.8 or later')
 
 setup(
   name='sa818',
@@ -59,7 +59,7 @@ setup(
     'Operating System :: OS Independent',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python :: 3.8',
     'Topic :: Communications :: Ham Radio',
   ],
 )

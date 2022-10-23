@@ -134,17 +134,17 @@ class SA818:
     if response != '+DMOSETGROUP:0':
       logger.error('SA818 programming error')
     else:
-      bw = ['Narrow', 'Wide'][opts.bw]
+      bw_label = ['Narrow', 'Wide'][opts.bw]
       if opts.ctcss:
         msg = "%s, BW: %s, RX frequency: %s, TX frequency: %s, ctcss: %s, squelch: %s, OK"
         tone = CTCSS[int(tone)]
-        logger.info(msg, response, bw, rx_freq, tx_freq, tone, opts.squelch)
+        logger.info(msg, response, bw_label, rx_freq, tx_freq, tone, opts.squelch)
       elif opts.dcs:
         msg = "%s, BW: %s RX frequency: %s, TX frequency: %s, dcs: %s, squelch: %s, OK"
-        logger.info(msg, response, bw, rx_freq, tx_freq, tone, opts.squelch)
+        logger.info(msg, response, bw_label, rx_freq, tx_freq, tone, opts.squelch)
       else:
         msg = "%s, BW: %s, RX frequency: %s, TX frequency: %s, squelch: %s, OK"
-        logger.info(msg, response, bw, rx_freq, tx_freq, opts.squelch)
+        logger.info(msg, response, bw_label, rx_freq, tx_freq, opts.squelch)
 
     if opts.close_tail is not None and opts.ctcss is not None:
       self.close_tail(opts)
@@ -264,6 +264,7 @@ def yesno(parg):
 def noneyesno(parg):
   if parg is not None:
     return yesno(parg)
+  return None
 
 def set_loglevel():
   loglevel = os.getenv('LOGLEVEL', 'INFO')
@@ -342,7 +343,7 @@ def main():
     print('sa818: error: the following arguments are required: {radio,volume,filters,version}\n'
           'use --help for more informatiion',
           file=sys.stderr)
-    exit(os.EX_USAGE)
+    sys.exit(os.EX_USAGE)
 
   if opts.debug:
     logger.setLevel(logging.DEBUG)

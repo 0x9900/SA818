@@ -49,7 +49,6 @@ class SA818:
   VOLUME = "AT+DMOSETVOLUME"
   TAIL = "AT+SETTAIL"
   NARROW = 0
-  WIDE = 1
   PORTS = ('/dev/serial0', '/dev/ttyUSB0')
   READ_TIMEOUT = 3.0
 
@@ -127,7 +126,7 @@ class SA818:
       rx_freq = "{:.4f}".format(opts.frequency)
       tx_freq = "{:.4f}".format(opts.frequency + opts.offset)
 
-    cmd = "{}={},{},{},{},{},{}".format(self.SETGRP, self.WIDE, tx_freq, rx_freq,
+    cmd = "{}={},{},{},{},{},{}".format(self.SETGRP, opts.bw, tx_freq, rx_freq,
                                         tone, opts.squelch, tone)
     self.send(cmd)
     time.sleep(1)
@@ -303,6 +302,8 @@ def main():
 
   p_radio = subparsers.add_parser("radio", help='Program the radio (frequency/tome/squelch)')
   p_radio.set_defaults(func="radio")
+  p_radio.add_argument('--bw', type=int, choices=(0, 1), default=1,
+                       help="Bandwidth 0=NARROW (12.5KHz), 1=WIDE (25KHx) [default: WIDE]")
   p_radio.add_argument("--frequency", required=True, type=type_frequency,
                        help="Receive frequency")
   p_radio.add_argument("--offset", default=0.0, type=float,

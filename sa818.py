@@ -155,7 +155,7 @@ class SA818:
     _yn = {True: "Yes", False: "No"}
     # filters are pre-emphasis, high-pass, low-pass
     cmd = "{}={},{},{}".format(self.FILTER, int(not opts.emphasis),
-                               int(not opts.highpass), int(not opts.lowpass))
+                               int(opts.highpass), int(opts.lowpass))
     self.send(cmd)
     time.sleep(1)
     response = self.readline()

@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 #
+# BSD 2-Clause License
+#
+# Copyright (c) 2022-2023 Fred W6BSD
+# All rights reserved.
+#
+
 import sys
 
 from setuptools import setup

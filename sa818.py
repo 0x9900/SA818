@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-# Fred (W6BSD)
+#
+# BSD 2-Clause License
+#
+# Copyright (c) 2022-2023 Fred W6BSD
+# All rights reserved.
 #
 
 __doc__ = """sa818"""

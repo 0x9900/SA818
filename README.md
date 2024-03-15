@@ -8,8 +8,8 @@ module SA818 used for the Pi-Hat.
 
 <img src="docs/IMG_0716.JPG" width="250" height="250" />
 
-We have some PCB left. We are selling them for [$25 on tindie][1].
-You can also visit the this blog post [about this program][2]
+> Out of stock: ~We have some PCB left. We are selling them for [$25 on tindie][1].
+You can also visit the this blog post [about this program][2]~
 
 **Before programming the SA818 module, make sure you consult the band
 plan for your country and transmit on a frequency you are allowed to

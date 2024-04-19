@@ -314,12 +314,11 @@ def format_codes():
     "You can specify a different code for transmit and receive by separating "
     "them by a comma.\n",
     "> Example: --ctcss 94.8,127.3 or --dcs 043N,047N\n\n",
-    f"CTCSS codes (PL Tones):\n{'\n'.join(ctcss)}",
+    f"CTCSS codes (PL Tones)\n{chr(10).join(ctcss)}",
     "\n\n",
     "DCS Codes:\n"
     "DCS codes must be followed by N or I for Normal or Inverse:\n",
-    "> Example: 047I\n"
-    f"{'\n'.join(dcs)}",
+    f"> Example: 047I\n{chr(10).join(dcs)}"
   )
   return ''.join(codes)
 

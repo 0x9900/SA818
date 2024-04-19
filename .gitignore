@@ -1,7 +1,9 @@
 .DS_Store
 *~
+*.swp
 *.pyc
 /*.egg-info/
 /build/
 /dist/
+/venv/
 upload.sh

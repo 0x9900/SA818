@@ -45,6 +45,7 @@ BAUD_RATES = [300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]
 
 DEFAULT_BAUDRATE = 9600
 
+
 class SA818:
   EOL = "\r\n"
   INIT = "AT+DMOCONNECT"
@@ -127,13 +128,12 @@ class SA818:
       tx_tone, rx_tone = ['0000', '0000']
 
     if opts.offset == 0.0:
-      tx_freq = rx_freq = "{:.4f}".format(opts.frequency)
+      tx_freq = rx_freq = "{opts.frequency:.4f}"
     else:
-      rx_freq = "{:.4f}".format(opts.frequency)
-      tx_freq = "{:.4f}".format(opts.frequency + opts.offset)
+      rx_freq = "{opts.frequency:.4f}"
+      tx_freq = "{opts.frequency + opts.offset:.4f}"
 
-    cmd = "{}={},{},{},{},{},{}".format(self.SETGRP, opts.bw, tx_freq, rx_freq,
-                                        tx_tone, opts.squelch, rx_tone)
+    cmd = "{self.SETGRP}={opts.bw},{tx_freq},{rx_freq},{tx_tone},{opts.squelch},{rx_tone}"
     self.send(cmd)
     time.sleep(1)
     response = self.readline()
@@ -161,8 +161,7 @@ class SA818:
   def set_filter(self, opts):
     _yn = {True: "Yes", False: "No"}
     # filters are pre-emphasis, high-pass, low-pass
-    cmd = "{}={},{},{}".format(self.FILTER, int(not opts.emphasis),
-                               int(opts.highpass), int(opts.lowpass))
+    cmd = "{self.FILTER}={nt(not opts.emphasis)},{int(opts.highpass)},{int(opts.lowpass)}"
     self.send(cmd)
     time.sleep(1)
     response = self.readline()
@@ -173,7 +172,7 @@ class SA818:
                   response, _yn[opts.emphasis], _yn[opts.highpass], _yn[opts.lowpass])
 
   def set_volume(self, opts):
-    cmd = "{}={:d}".format(self.VOLUME, opts.level)
+    cmd = "{self.VOLUME}={opts.level:d}"
     self.send(cmd)
     time.sleep(1)
     response = self.readline()
@@ -184,7 +183,7 @@ class SA818:
 
   def close_tail(self, opts):
     _yn = {True: "Yes", False: "No"}
-    cmd = "{}={}".format(self.TAIL, int(opts.close_tail))
+    cmd = "{self.TAIL}={int(opts.close_tail)}"
     self.send(cmd)
     time.sleep(1)
     response = self.readline()
@@ -204,6 +203,7 @@ def type_frequency(parg):
     logger.error('Frequency outside the amateur bands')
     raise argparse.ArgumentError
   return frequency
+
 
 def type_ctcss(parg):
   err_msg = 'Invalid CTCSS use the --help argument for the list of CTCSS'
@@ -228,6 +228,7 @@ def type_ctcss(parg):
 
   return tone_codes
 
+
 def type_dcs(parg):
   err_msg = 'Invalid DCS use the --help argument for the list of DCS'
   dcs_codes = []
@@ -245,7 +246,7 @@ def type_dcs(parg):
 
     code, direction = code[:-1], code[-1]
     try:
-      dcs = "{:03d}".format(int(code))
+      dcs = "{int(code):03d}"
       if dcs not in DCS_CODES:
         logger.error(err_msg)
         raise argparse.ArgumentError
@@ -254,6 +255,7 @@ def type_dcs(parg):
     dcs_codes.append(dcs + direction)
 
   return dcs_codes
+
 
 def type_squelch(parg):
   try:
@@ -266,6 +268,7 @@ def type_squelch(parg):
     raise argparse.ArgumentError
   return value
 
+
 def type_level(parg):
   try:
     value = int(parg)
@@ -277,6 +280,7 @@ def type_level(parg):
     raise argparse.ArgumentError
   return value
 
+
 def yesno(parg):
   yes_strings = ["y", "yes", "true", "1", "on"]
   no_strings = ["n", "no", "false", "0", "off"]
@@ -286,10 +290,12 @@ def yesno(parg):
     return False
   raise argparse.ArgumentError
 
+
 def noneyesno(parg):
   if parg is not None:
     return yesno(parg)
   return None
+
 
 def set_loglevel():
   loglevel = os.getenv('LOGLEVEL', 'INFO')
@@ -299,6 +305,7 @@ def set_loglevel():
   except ValueError:
     logger.warning('Loglevel error: %s', loglevel)
 
+
 def format_codes():
   ctcss = textwrap.wrap(', '.join(CTCSS[1:]))
   dcs = textwrap.wrap(', '.join(DCS_CODES))
@@ -307,14 +314,15 @@ def format_codes():
     "You can specify a different code for transmit and receive by separating "
     "them by a comma.\n",
     "> Example: --ctcss 94.8,127.3 or --dcs 043N,047N\n\n",
-    "CTCSS codes (PL Tones):\n{}".format('\n'.join(ctcss)),
+    f"CTCSS codes (PL Tones):\n{'\n'.join(ctcss)}",
     "\n\n",
     "DCS Codes:\n"
     "DCS codes must be followed by N or I for Normal or Inverse:\n",
     "> Example: 047I\n"
-    "{}".format('\n'.join(dcs))
+    f"{'\n'.join(dcs)}",
   )
   return ''.join(codes)
+
 
 def main():
   set_loglevel()
@@ -352,7 +360,7 @@ def main():
   p_volume = subparsers.add_parser("volume", help="Set the volume level")
   p_volume.set_defaults(func="volume")
   p_volume.add_argument("--level", type=type_level, default=4,
-                      help="Volume value (1 to 8) [default: %(default)s]")
+                        help="Volume value (1 to 8) [default: %(default)s]")
 
   p_filter = subparsers.add_parser("filters", help="Set/Unset filters")
   p_filter.set_defaults(func="filters")
@@ -392,6 +400,7 @@ def main():
     radio.set_filter(opts)
   elif opts.func == 'volume':
     radio.set_volume(opts)
+
 
 if __name__ == "__main__":
   main()

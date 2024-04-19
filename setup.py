@@ -27,7 +27,8 @@ $ pip install sa818
 
 ```
 $ sa818 radio --frequency 145.230 --offset -.6 --ctcss 100
-SA818: INFO: +DMOSETGROUP:0, RX frequency: 145.2300, TX frequency: 144.6300, ctcss: 100.0, squelch: 4, OK
+SA818: INFO: +DMOSETGROUP:0, RX frequency: 145.2300, TX frequency: 144.6300, ctcss: 100.0,
+squelch: 4, OK
 
 $ sa818 volume --level 5
 SA818: INFO: +DMOSETVOLUME:0 Volume level: 5
@@ -55,7 +56,7 @@ setup(
   author_email='w6bsd@bsdworld.org',
   py_modules=['sa818'],
   install_requires=['pyserial'],
-  entry_points = {
+  entry_points={
     'console_scripts': ['sa818 = sa818:main'],
   },
   classifiers=[

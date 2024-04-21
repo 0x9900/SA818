@@ -128,12 +128,12 @@ class SA818:
       tx_tone, rx_tone = ['0000', '0000']
 
     if opts.offset == 0.0:
-      tx_freq = rx_freq = "{opts.frequency:.4f}"
+      tx_freq = rx_freq = f"{opts.frequency:.4f}"
     else:
-      rx_freq = "{opts.frequency:.4f}"
-      tx_freq = "{opts.frequency + opts.offset:.4f}"
+      rx_freq = f"{opts.frequency:.4f}"
+      tx_freq = f"{opts.frequency + opts.offset:.4f}"
 
-    cmd = "{self.SETGRP}={opts.bw},{tx_freq},{rx_freq},{tx_tone},{opts.squelch},{rx_tone}"
+    cmd = f"{self.SETGRP}={opts.bw},{tx_freq},{rx_freq},{tx_tone},{opts.squelch},{rx_tone}"
     self.send(cmd)
     time.sleep(1)
     response = self.readline()
@@ -161,7 +161,7 @@ class SA818:
   def set_filter(self, opts):
     _yn = {True: "Yes", False: "No"}
     # filters are pre-emphasis, high-pass, low-pass
-    cmd = "{self.FILTER}={nt(not opts.emphasis)},{int(opts.highpass)},{int(opts.lowpass)}"
+    cmd = f"{self.FILTER}={int(not opts.emphasis)},{int(opts.highpass)},{int(opts.lowpass)}"
     self.send(cmd)
     time.sleep(1)
     response = self.readline()
@@ -172,7 +172,7 @@ class SA818:
                   response, _yn[opts.emphasis], _yn[opts.highpass], _yn[opts.lowpass])
 
   def set_volume(self, opts):
-    cmd = "{self.VOLUME}={opts.level:d}"
+    cmd = f"{self.VOLUME}={opts.level:d}"
     self.send(cmd)
     time.sleep(1)
     response = self.readline()
@@ -183,7 +183,7 @@ class SA818:
 
   def close_tail(self, opts):
     _yn = {True: "Yes", False: "No"}
-    cmd = "{self.TAIL}={int(opts.close_tail)}"
+    cmd = f"{self.TAIL}={int(opts.close_tail)}"
     self.send(cmd)
     time.sleep(1)
     response = self.readline()
@@ -246,7 +246,7 @@ def type_dcs(parg):
 
     code, direction = code[:-1], code[-1]
     try:
-      dcs = "{int(code):03d}"
+      dcs = f"{int(code):03d}"
       if dcs not in DCS_CODES:
         logger.error(err_msg)
         raise argparse.ArgumentError

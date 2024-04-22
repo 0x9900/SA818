@@ -378,7 +378,7 @@ def main():
     print('sa818: error: the following arguments are required: {radio,volume,filters,version}\n'
           'use --help for more informatiion',
           file=sys.stderr)
-    sys.exit(os.EX_USAGE)
+    raise SystemExit(os.EX_USAGE) from None
 
   if opts.debug:
     logger.setLevel(logging.DEBUG)
@@ -389,7 +389,7 @@ def main():
     radio = SA818(opts.port, opts.speed)
   except (IOError, SystemError) as err:
     logger.error(err)
-    sys.exit(os.EX_IOERR)
+    raise SystemExit(os.EX_IOERR) from None
 
   if opts.func == 'version':
     radio.version()

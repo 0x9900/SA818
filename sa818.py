@@ -161,7 +161,8 @@ class SA818:
   def set_filter(self, opts):
     _yn = {True: "Yes", False: "No"}
     # filters are pre-emphasis, high-pass, low-pass
-    cmd = f"{self.FILTER}={int(not opts.emphasis)},{int(opts.highpass)},{int(opts.lowpass)}"
+    cmd = (f"{self.FILTER}={int(not opts.emphasis)},"
+           f"{int(not opts.highpass)},{int(not opts.lowpass)}")
     self.send(cmd)
     time.sleep(1)
     response = self.readline()

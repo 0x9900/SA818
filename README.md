@@ -44,7 +44,7 @@ SA818: INFO: Firmware version: V4.2
 SA818: INFO: +DMOSETGROUP:0, BW: Wide, Frequency (RX: 145.2300 / TX: 144.6300), CTCSS (TX: 100.0 / RX: 100.0), squelch: 4, OK
 
 [root@allstar ~]# sa818 volume --level 5
-SA818: INFO: +DMOSETVOLUME:0 Volume level: 5
+SA818: INFO: +DMOSETVOLUME:0 Volume level: 5, OK
 ```
 
 If you use an FTDI dongle to program the SA828 module the USB port can
@@ -67,7 +67,8 @@ This program has for sections:
  - version: display the firmware version of the SA818 module
 
 ```
-usage: sa818 [-h] [--port PORT] [--debug]
+usage: sa818 [-h] [--debug] [--port PORT]
+                [--speed {300,1200,2400,4800,9600,19200,38400,57600,115200}]
                 {radio,volume,filters,version} ...
 
 generate configuration for switch port
@@ -76,30 +77,36 @@ positional arguments:
   {radio,volume,filters,version}
     radio               Program the radio (frequency/tome/squelch)
     volume              Set the volume level
-    filters             Set filters
+    filters             Enable/Disable filters
     version             Show the firmware version of the SA818
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
-  --port PORT           Serial port [default: linux console port]
   --debug
+  --port PORT           Serial port [default: linux console port]
+  --speed {300,1200,2400,4800,9600,19200,38400,57600,115200}
+                        Connection speed
 ```
 
 ### Radio
 
 ```
-usage: sa818 radio [-h] --frequency FREQUENCY [--offset OFFSET]
-                      [--squelch SQUELCH] [--ctcss CTCSS | --dcs DCS]
+usage: sa818 radio [-h] [--bw {0,1}] --frequency FREQUENCY
+                      [--offset OFFSET] [--squelch SQUELCH]
+                      [--ctcss CTCSS | --dcs DCS] [--tail TAIL]
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
+  --bw {0,1}            Bandwidth 0=NARROW (12.5KHz), 1=WIDE (25KHx) [default:
+                        WIDE]
   --frequency FREQUENCY
-                        Transmit frequency
-  --offset OFFSET       0.0 for no offset [default: 0.0]
-  --squelch SQUELCH     Squelch value (1 to 9) [default: 4]
+                        Receive frequency
+  --offset OFFSET       Offset in MHz, 0 for no offset [default: 0.0]
+  --squelch SQUELCH     Squelch value (0 to 8) [default: 4]
   --ctcss CTCSS         CTCSS (PL Tone) 0 for no CTCSS [default: None]
-  --dcs DCS             DCS code must me the number followed by [N normal] or
+  --dcs DCS             DCS code must be the number followed by [N normal] or
                         [I inverse] [default: None]
+  --tail TAIL           Close CTCSS Tail Tone (Open/Close)
 ```
 
 ### Volume
@@ -107,7 +114,7 @@ optional arguments:
 ```
 usage: sa818 volume [-h] [--level LEVEL]
 
-optional arguments:
+options:
   -h, --help     show this help message and exit
   --level LEVEL  Volume value (1 to 8) [default: 4]
 ```
@@ -115,14 +122,14 @@ optional arguments:
 ### Filters
 
 ```
-usage: sa818 filters [-h] [--emphasis EMPHASIS] [--highpass HIGHPASS]
-                        [--lowpass LOWPASS]
+usage: sa818 filters [-h] --emphasis EMPHASIS --highpass HIGHPASS --lowpass
+                        LOWPASS
 
-optional arguments:
+options:
   -h, --help           show this help message and exit
-  --emphasis EMPHASIS  Disable [Pr/De]-emphasis (yes/no) [default: no]
-  --highpass HIGHPASS  Disable high pass filter (yes/no) [default: no]
-  --lowpass LOWPASS    Disable low pass filters (yes/no) [default: no]
+  --emphasis EMPHASIS  [Pr/De]-emphasis (Enable/Disable)
+  --highpass HIGHPASS  High pass filter (Enable/Disable)
+  --lowpass LOWPASS    Low pass filters (Enable/Disable)
 ```
 
 ## CTCSS codes (PL Tones)

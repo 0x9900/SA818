@@ -164,7 +164,7 @@ class SA818:
         setattr(opts, key, 1)
     _rx = {0: 'enabled', 1: 'disabled'}
     # filters are pre-emphasis, high-pass, low-pass
-    cmd = (f"{self.FILTER}={opts.emphasis},{opts.highpass},{opts.lowpass}")
+    cmd = f"{self.FILTER}={opts.emphasis},{opts.highpass},{opts.lowpass}"
     self.send(cmd)
     time.sleep(1)
     response = self.readline()

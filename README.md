@@ -1,16 +1,5 @@
 # SA818 Programming
 
-My friend (W6IPA) and I developed a versatile Raspberry-Pi hat that
-can be used for Allstar, Echolink, APRS, or any digital modes.
-
-We use the program in this GitHub repository to program the radio
-module SA818 used for the Pi-Hat.
-
-<img src="docs/IMG_0716.JPG" width="250" height="250" />
-
-> Out of stock: ~We have some PCB left. We are selling them for [$25 on tindie][1].
-You can also visit the this blog post [about this program][2]~
-
 **Before programming the SA818 module, make sure you consult the band
 plan for your country and transmit on a frequency you are allowed to
 use.**

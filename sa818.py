@@ -116,7 +116,7 @@ class SA818:
     try:
       version = re.split(r'[:_]', reply)
     except ValueError:
-      logger.error('Unable to decode the firmeare version')
+      logger.error('Unable to decode the firmware version')
       return None
 
     logger.info('Firmware %s, version: %s', version[1], '_'.join(version[2:]))
@@ -343,7 +343,7 @@ def command_parser():
                       help="Connection speed")
   subparsers = parser.add_subparsers()
 
-  p_radio = subparsers.add_parser("radio", help='Program the radio (frequency/tome/squelch)')
+  p_radio = subparsers.add_parser("radio", help='Program the radio (frequency/tone/squelch)')
   p_radio.set_defaults(func="radio")
   p_radio.add_argument('--bw', type=int, choices=(0, 1), default=1,
                        help="Bandwidth 0=NARROW (12.5KHz), 1=WIDE (25KHx) [default: WIDE]")

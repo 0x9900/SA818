@@ -11,6 +11,7 @@ __doc__ = """sa818"""
 import argparse
 import logging
 import os
+import re
 import sys
 import textwrap
 import time
@@ -113,11 +114,12 @@ class SA818:
     time.sleep(0.5)
     reply = self.readline()
     try:
-      _, version = reply.split('_')
+      version = re.split(r'[:_]', reply)
     except ValueError:
       logger.error('Unable to decode the firmeare version')
-    else:
-      logger.info('Firmware version: %s', version)
+      return None
+
+    logger.info('Firmware %s, version: %s', version[1], '_'.join(version[2:]))
     return version
 
   def set_radio(self, opts):

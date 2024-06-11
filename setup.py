@@ -20,7 +20,7 @@ the radio module SA818
 """
 
 __author__ = "Fred C. (W6BSD)"
-__version__ = '0.2.7'
+__version__ = '0.2.8'
 __license__ = 'BSD'
 
 py_version = sys.version_info[:2]

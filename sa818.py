@@ -122,7 +122,7 @@ class SA818:
     logger.info('Firmware %s, version: %s', version[1], '_'.join(version[2:]))
     return version
 
-  def set_radio(self, frequency, offset, bw, squelch, ctcss, dcs, tail):  #pylint: disable=too-many-arguments
+  def set_radio(self, frequency, offset, bw, squelch, ctcss, dcs, tail):
     tone = ctcss if ctcss else dcs
     if tone:                # 0000 = No ctcss or dcs tone
       tx_tone, rx_tone = tone

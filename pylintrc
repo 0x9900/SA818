@@ -154,7 +154,9 @@ disable=raw-checker-failed,
         use-symbolic-message-instead,
 	missing-function-docstring,
 	missing-class-docstring,
-	missing-module-docstring
+	missing-module-docstring,
+      too-many-arguments,
+      too-many-locals
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

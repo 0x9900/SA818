@@ -407,7 +407,15 @@ def main():
   if opts.func == 'version':
     radio.version()
   elif opts.func == 'radio':
-    radio.set_radio(opts.frequency, opts.offset, opts.bw, opts.squelch, opts.ctcss, opts.dcs, opts.tail)
+    radio.set_radio(
+      opts.frequency,
+      opts.offset,
+      opts.bw,
+      opts.squelch,
+      opts.ctcss,
+      opts.dcs,
+      opts.tail
+    )
   elif opts.func == 'filters':
     for key in ('emphasis', 'highpass', 'lowpass'):
       if getattr(opts, key) is not None:

@@ -32,6 +32,7 @@ CTCSS = (
 )
 
 DCS_CODES = [
+  "None",
   "023", "025", "026", "031", "032", "036", "043", "047", "051", "053", "054",
   "065", "071", "072", "073", "074", "114", "115", "116", "125", "131", "132",
   "134", "143", "152", "155", "156", "162", "165", "172", "174", "205", "223",
@@ -218,15 +219,18 @@ def type_ctcss(parg):
     raise argparse.ArgumentError from None
 
   for code in codes:
-    try:
-      ctcss = str(float(code))
-      if ctcss not in CTCSS:
-        raise ValueError
-      ctcss = CTCSS.index(ctcss)
-      tone_codes.append(f"{ctcss:04d}")
-    except ValueError:
-      logger.error(err_msg)
-      raise argparse.ArgumentTypeError from None
+    if code.lower() == "none":
+      tone_codes.append("0000")  # No CTCSS
+    else:
+      try:
+        ctcss = str(float(code))
+        if ctcss not in CTCSS:
+          raise ValueError
+        ctcss = CTCSS.index(ctcss)
+        tone_codes.append(f"{ctcss:04d}")
+      except ValueError:
+        logger.error(err_msg)
+        raise argparse.ArgumentTypeError from None
 
   return tone_codes
 
@@ -242,19 +246,22 @@ def type_dcs(parg):
     raise argparse.ArgumentError from None
 
   for code in codes:
-    if code[-1] not in ('N', 'I'):
-      logger.error(err_msg)
-      raise argparse.ArgumentError from None
-
-    code, direction = code[:-1], code[-1]
-    try:
-      dcs = f"{int(code):03d}"
-      if dcs not in DCS_CODES:
+    if code.lower() == "none":
+      dcs_codes.append("0000")  # No DCS
+    else:
+      if code[-1] not in ('N', 'I'):
         logger.error(err_msg)
-        raise argparse.ArgumentError
-    except ValueError:
-      raise argparse.ArgumentTypeError from None
-    dcs_codes.append(dcs + direction)
+        raise argparse.ArgumentError from None
+
+      code, direction = code[:-1], code[-1]
+      try:
+        dcs = f"{int(code):03d}"
+        if dcs not in DCS_CODES:
+          logger.error(err_msg)
+          raise argparse.ArgumentError
+      except ValueError:
+        raise argparse.ArgumentTypeError from None
+      dcs_codes.append(dcs + direction)
 
   return dcs_codes
 

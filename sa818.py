@@ -149,9 +149,11 @@ class SA818:
         logger.info(msg, response, bw_label, rx_freq, tx_freq,
                     CTCSS[int(tx_tone)], CTCSS[int(rx_tone)], squelch)
       elif dcs:
-        msg = "%s, BW: %s Frequency (RX: %s / TX: %s), DCD (TX: %s / RX: %s), squelch: %s, OK"
+        tx_tone_display = None if tx_tone == '0000' else tx_tone
+        rx_tone_display = None if rx_tone == '0000' else rx_tone
+        msg = "%s, BW: %s Frequency (RX: %s / TX: %s), DCS (TX: %s / RX: %s), squelch: %s, OK"
         logger.info(msg, response, bw_label, rx_freq, tx_freq,
-                    tx_tone, rx_tone, squelch)
+                    tx_tone_display, rx_tone_display, squelch)
       else:
         msg = "%s, BW: %s, RX frequency: %s, TX frequency: %s, squelch: %s, OK"
         logger.info(msg, response, bw_label, rx_freq, tx_freq, squelch)

@@ -46,6 +46,9 @@ SA818: INFO: +DMOSETVOLUME:0 Volume level: 5
 
 It is possible to specify a different CTCSS or DCS code for transmit and receive by separating the two codes by a comma (no spaces). For example, `--ctcss 100,88.5` will set the CTCSS 100Hz for transmit and 88.5Hz for receive.
 
+> [!NOTE]
+> It is also possible to specify CTCSS or DCS on transmit or receive only. For example, `--ctcss 100,None` will set the CTCSS 100Hz for transmit only (nothing for receive).
+
 ## Usage
 
 This program has for sections:

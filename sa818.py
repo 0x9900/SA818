@@ -130,7 +130,7 @@ class SA818:
     return version
 
   def set_radio(self, frequency, offset, bw, squelch, ctcss, dcs, tail):
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-positional-arguments
     tone = ctcss if ctcss else dcs
     if tone:                # 0000 = No ctcss or dcs tone
       tx_tone, rx_tone = tone

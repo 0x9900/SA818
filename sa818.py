@@ -67,21 +67,30 @@ class SA818:
 
     for _port in ports:
       try:
+        # Try to open the serial port
         self.serial = serial.Serial(port=_port, baudrate=baud,
                                     parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE,
                                     bytesize=serial.EIGHTBITS,
                                     timeout=self.READ_TIMEOUT)
         logger.debug(self.serial)
-        break
+
+        # Send initialization command and check the reply
+        self.send(self.INIT)
+        reply = self.readline()
+        if reply == "+DMOCONNECT:0":
+          # if expected response, proceed
+          break
+        else:
+          # if unexpected response, try another port
+          logger.debug("Port %s not SA818: %s", _port, reply)
+          self.serial.close()
+          self.serial = None
+
       except serial.SerialException as err:
-        logger.debug(err)
+        logger.debug("Port %s not available: %s", _port, err)
+        self.serial = None
 
     if not isinstance(self.serial, serial.Serial):
-      raise IOError('Error openning the serial port')
-
-    self.send(self.INIT)
-    reply = self.readline()
-    if reply != "+DMOCONNECT:0":
       raise SystemError('Connection error') from None
 
   def close(self):

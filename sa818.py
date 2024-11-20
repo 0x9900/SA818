@@ -78,10 +78,7 @@ class SA818:
         # Send initialization command and check the reply
         self.send(self.INIT)
         reply = self.readline()
-        if reply == "+DMOCONNECT:0":
-          # if expected response, proceed
-          break
-        else:
+        if reply != "+DMOCONNECT:0":
           # if unexpected response, try another port
           logger.debug("Port %s not SA818: %s", _port, reply)
           self.serial.close()
@@ -133,6 +130,7 @@ class SA818:
     return version
 
   def set_radio(self, frequency, offset, bw, squelch, ctcss, dcs, tail):
+    # pylint: disable=too-many-locals
     tone = ctcss if ctcss else dcs
     if tone:                # 0000 = No ctcss or dcs tone
       tx_tone, rx_tone = tone
